@@ -2,6 +2,7 @@ FROM java:openjdk-8-jre
 MAINTAINER Sian Lerk Lau <kiawin@gmail.com>
 
 ENV DEBIAN_FRONTEND noninteractive
+ENV PATH /opt/kibana/bin:/opt/logstash/bin:$PATH
 
 # General
 RUN apt-get update
@@ -10,8 +11,8 @@ RUN apt-get install -y supervisor curl
 # Elasticsearch
 RUN \
     apt-key adv --keyserver pool.sks-keyservers.net --recv-keys 46095ACC8548582C1A2699A9D27D666CD88E42B4 && \
-    if ! grep "elasticsearch" /etc/apt/sources.list; then echo "deb http://packages.elasticsearch.org/elasticsearch/1.4/debian stable main" >> /etc/apt/sources.list;fi && \
-    if ! grep "logstash" /etc/apt/sources.list; then echo "deb http://packages.elasticsearch.org/logstash/1.4/debian stable main" >> /etc/apt/sources.list;fi && \
+    if ! grep "elasticsearch" /etc/apt/sources.list; then echo "deb http://packages.elasticsearch.org/elasticsearch/1.5/debian stable main" >> /etc/apt/sources.list;fi && \
+    if ! grep "logstash" /etc/apt/sources.list; then echo "deb http://packages.elasticsearch.org/logstash/1.5/debian stable main" >> /etc/apt/sources.list;fi && \
     apt-get update
 
 RUN \
@@ -27,7 +28,7 @@ RUN ln -fs /data/etc/elasticsearch/elasticsearch.yml /etc/elasticsearch/elastics
 RUN ln -fs /data/etc/supervisor/conf.d/elasticsearch.conf /etc/supervisor/conf.d/elasticsearch.conf
 
 # Logstash
-RUN apt-get install -y logstash logstash-contrib && \
+RUN apt-get install -y logstash && \
     apt-get clean
 
 ## For distribution
@@ -40,8 +41,8 @@ RUN ln -fs /data/etc/supervisor/conf.d/logstash.conf /etc/supervisor/conf.d/logs
 
 # Kibana
 RUN \
-    curl -s https://download.elasticsearch.org/kibana/kibana/kibana-4.0.1-linux-x64.tar.gz | tar -C /opt -xz && \
-    ln -s /opt/kibana-4.0.1-linux-x64 /opt/kibana
+    curl -s https://download.elasticsearch.org/kibana/kibana/kibana-4.0.2-linux-x64.tar.gz | tar -C /opt -xz && \
+    ln -s /opt/kibana-4.0.2-linux-x64 /opt/kibana
 
 ## For distribution
 #ADD opt/kibana/config/kibana.yml /opt/kibana/config/kibana.yml
